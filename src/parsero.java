@@ -5,18 +5,19 @@ public class parsero {
 	
 	public String texto;
 	public int code, ap;
-	
+	private token[] tokens = new token[20];
 	
 	public parsero(ArrayList<String> list) {
 		Stack<String> pila = new Stack<String>();
-		ArrayList<String> lista = new ArrayList<String>();
 
 		pila.push("$");
 		pila.push("P");
-		lista.add("$");
-		for (int i = 0; i < lista.size(); i++) {
-			System.out.print(lista.get(i) + " ");
+		list.add("$");
+		for (int i = 0; i < list.size(); i++) {
+			System.out.print(list.get(i) + " ");
 		}
+		
+		/*
 		System.out.println("");
 		int apun = 0;
 		String x="", k="";
@@ -66,7 +67,11 @@ public class parsero {
 			texto = "Falta Delimitador";
 			break;
 		}
-		
+		*/
+	}
+	
+	public void fillTokens() {
+
 	}
 	
 	public String getTabla(String x, String k) {

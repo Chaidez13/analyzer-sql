@@ -98,7 +98,7 @@ public class escaner {
 	}
 	
 	public String llenarTablas() {
-		String kad = null;
+		String kad = null, consCom = "";
 		int errLin = 0;
 		String messageReturn = "106: Error en carga de datos. Por favor reintente";
 		int tipo=0, valor=0, error=100;
@@ -124,8 +124,21 @@ public class escaner {
 					case ")": valor=53; break;
 					case ";": valor=55; break;
 					default: 
-						valor=54; 
-						comilla = !comilla;
+						if(!comilla) {
+							consCom = "";
+							comilla = true;
+							todo.add(cad);
+				    		Object datos[] = {con, (i+1), cad, 5, 54};
+				    		modelo.addRow(datos);
+						}else {
+							comilla = false;
+							con++;
+							System.out.println();
+							int valorC = addArrayInesCones(consCom, cones, modeloCo, tablaCo, 600, 62, (i+1));
+							todo.add("x");
+				    		Object datos[] = {con, (i+1), consCom, 61, valorC};
+				    		modelo.addRow(datos);
+						}
 					break;
 					}
 			   	} else if(cad.matches(ope)){
@@ -157,11 +170,12 @@ public class escaner {
 						}
 					}
 		    		if(!isRes) {
-		    			if(comilla || cad.matches(cons)) {
+		    			if(comilla) {
+		    				consCom = consCom + cad + " ";
+		    			}else if(cad.matches(cons)) {
 		    				simb = "x";
 		    				tipo = 6;  	
-		    				int type = (comilla)? 62 : 61;
-		    				valor = addArrayInesCones(cad, cones, modeloCo, tablaCo, 600, type, (i+1));
+		    				valor = addArrayInesCones(cad, cones, modeloCo, tablaCo, 600, 61, (i+1));
 		    			}else {
 		    				simb = "i";
 		    				tipo = 4;
@@ -177,20 +191,18 @@ public class escaner {
 			   			error = 103;
 			   	}
 		    	
-		    	if(error==100) {
+		    	if(error==100 && !comilla) {
 		    		con++;
 		    		Object datos[] = {con, (i+1), cad, tipo, valor};
 		    		todo.add(simb);
 		    		modelo.addRow(datos);
-		    	}else {
+		    	}else if(error!=100){
 		    		errLin = (i+1); 
 		    		kad = cad;
 		    		i = (lineas.length+1);
 		    		break;
 		    	}
 			}
-			
-			
 		}
 		
 		if(error!=100) {
@@ -214,6 +226,10 @@ public class escaner {
 			messageReturn = "105: No se Ingreso Texto";
 		
 		return messageReturn;
+	}
+	
+	public ArrayList<String> getTodo(){
+		return this.todo;
 	}
 }
 

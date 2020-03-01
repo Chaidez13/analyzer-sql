@@ -101,7 +101,8 @@ public class window  extends JFrame{
 				
 				label4.setText(scan.llenarTablas());
 			    
-			   // parsero parser = new parsero(todo);
+				ArrayList<String> todo = scan.getTodo();
+				parsero parser = new parsero(todo);
 			}
 		});
 		
