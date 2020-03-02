@@ -98,11 +98,19 @@ public class window  extends JFrame{
 				scan.setModels(modeloCo, modeloId, modeloEr, modelo);
 				scan.setPanes(caja5, caja2);
 				scan.setTables(tablaCo, tablaId);
+				String scanText = scan.llenarTablas();
 				
-				label4.setText(scan.llenarTablas());
-			    
-				ArrayList<String> todo = scan.getTodo();
+				//label4.setText(scanText);
+				
+				//Esto agrega el PARSER /*
+				ArrayList<token> todo = scan.getTodo();
 				parsero parser = new parsero(todo);
+				parser.setElements(caja5, caja2, label1, modeloEr);
+				String par = parser.doParser();
+				
+				label4.setText(scanText + "\\n" + par);
+				
+				// */
 			}
 		});
 		

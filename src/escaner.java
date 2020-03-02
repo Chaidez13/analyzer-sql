@@ -12,8 +12,8 @@ public class escaner {
 	int con;
 	String del, ope, id, cons, rel, regex, text;
 	String[] lineas;
-	ArrayList<String> todo, ides, cones;
-
+	ArrayList<token> todo;
+	ArrayList<String> ides, cones;
 	DefaultTableModel modeloCo, modeloId, modeloEr, modelo;
 	JTable tablaCo, tablaId;
 	JScrollPane caja5, caja2;
@@ -22,7 +22,8 @@ public class escaner {
 	public escaner(JTextArea cuadroTexto, JLabel label) {
 		ides = new ArrayList<String>(); 
 		cones = new ArrayList<String>(); 
-		todo = new ArrayList<String>(); 
+		todo = new ArrayList<token>(); 
+
 		this.label1 = label;
 		con=0;
 		
@@ -70,6 +71,7 @@ public class escaner {
 		id = "[a-zA-Z]\\w*[#]?";
 		cons = "\\d+[,.]?\\d*[Ee]?\\d*[,.]?\\d*";
 		rel = ">=|<=|[<>=]";
+		regex = ">=|<=|\\w+[#]?|\\S";
 		palabrasReservadas res[] = {new palabrasReservadas("SELECT", "s", 10),
 				new palabrasReservadas("FROM", "f", 11),
 				new palabrasReservadas("WHERE", "w", 12),
@@ -90,20 +92,26 @@ public class escaner {
 				new palabrasReservadas("INSERT", "m", 27),
 				new palabrasReservadas("INTO", "q", 28),
 				new palabrasReservadas("VALUES", "v", 29),};
-
-
-		regex = ">=|<=|\\w+[#]?|\\S";
 		
 		return res;
 	}
 	
+	public void casoComilla(String cad, int linea) {
+		System.out.println(cad +" : "+ linea);
+		con++;
+		int valorC = addArrayInesCones(cad, cones, modeloCo, tablaCo, 600, 62, (linea+1));
+		todo.add(new token("a", (linea+1)));
+		Object datos[] = {con, (linea+1), cad, 61, valorC};
+		modelo.addRow(datos);
+	}
+	
 	public String llenarTablas() {
 		String kad = null, consCom = "";
-		int errLin = 0;
+		int errLin = 0, comLin = 0;
 		String messageReturn = "106: Error en carga de datos. Por favor reintente";
 		int tipo=0, valor=0, error=100;
 		palabrasReservadas res[] = cargarRegex();
-		boolean comilla = false;
+		boolean comilla = false, wait = false;
 		
 		for (int i = 0; i < this.lineas.length; i++) {
 			Pattern p = Pattern.compile(regex);
@@ -124,20 +132,15 @@ public class escaner {
 					case ")": valor=53; break;
 					case ";": valor=55; break;
 					default: 
+						simb = "'";
+						valor = 54;
 						if(!comilla) {
 							consCom = "";
 							comilla = true;
-							todo.add(cad);
-				    		Object datos[] = {con, (i+1), cad, 5, 54};
-				    		modelo.addRow(datos);
 						}else {
+							wait = false;
 							comilla = false;
-							con++;
-							System.out.println();
-							int valorC = addArrayInesCones(consCom, cones, modeloCo, tablaCo, 600, 62, (i+1));
-							todo.add("x");
-				    		Object datos[] = {con, (i+1), consCom, 61, valorC};
-				    		modelo.addRow(datos);
+							casoComilla(consCom, comLin);
 						}
 					break;
 					}
@@ -151,6 +154,7 @@ public class escaner {
 					}
 		    	}else if(cad.matches(rel)) {
 		    		tipo = 8;
+		    		simb = "r";
 			   		switch (cad) {
 					case ">": valor=81; break;
 					case "<": valor=82; break;
@@ -166,14 +170,22 @@ public class escaner {
 							simb = pal.simbolo;
 							tipo = 1;
 							isRes = true;
+							if(comilla) {
+								wait = false;
+								comilla = false;
+								casoComilla(consCom, comLin);
+							}
 							break;
 						}
 					}
 		    		if(!isRes) {
 		    			if(comilla) {
 		    				consCom = consCom + cad + " ";
+		    				comLin = (i+1);
+		    				System.out.println(consCom +" : "+ comLin);
+		    				wait = true;
 		    			}else if(cad.matches(cons)) {
-		    				simb = "x";
+		    				simb = "d";
 		    				tipo = 6;  	
 		    				valor = addArrayInesCones(cad, cones, modeloCo, tablaCo, 600, 61, (i+1));
 		    			}else {
@@ -191,10 +203,10 @@ public class escaner {
 			   			error = 103;
 			   	}
 		    	
-		    	if(error==100 && !comilla) {
+		    	if(error==100 && !wait) {
 		    		con++;
 		    		Object datos[] = {con, (i+1), cad, tipo, valor};
-		    		todo.add(simb);
+		    		todo.add(new token(simb, (i+1)));
 		    		modelo.addRow(datos);
 		    	}else if(error!=100){
 		    		errLin = (i+1); 
@@ -202,6 +214,7 @@ public class escaner {
 		    		i = (lineas.length+1);
 		    		break;
 		    	}
+	
 			}
 		}
 		
@@ -228,7 +241,7 @@ public class escaner {
 		return messageReturn;
 	}
 	
-	public ArrayList<String> getTodo(){
+	public ArrayList<token> getTodo(){
 		return this.todo;
 	}
 }

@@ -1,15 +1,11 @@
-import java.util.ArrayList;
 
 public class token {
-	public String key;
-	public ArrayList<String> primeros;
-	public ArrayList<String> siguientes;
+	String key;
+	int linea;
 	
-	public token(String key) {
+	public token(String key, int linea) {
 		this.key = key;
+		this.linea = linea;
 	}
 	
-	public void addPrimero(String primero) {
-		this.primeros.add(primero);
-	}
 }
