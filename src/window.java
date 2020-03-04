@@ -102,7 +102,8 @@ public class window  extends JFrame{
 				
 				//label4.setText(scanText);
 				
-				//Esto agrega el PARSER /*
+				//Esto agrega el PARSER
+				// /*
 				ArrayList<token> todo = scan.getTodo();
 				parsero parser = new parsero(todo);
 				parser.setElements(caja5, caja2, label1, modeloEr);

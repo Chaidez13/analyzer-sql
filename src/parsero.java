@@ -9,7 +9,6 @@ public class parsero {
 	
 	public String texto;
 	public int code, ap;
-	private int error;
 	JScrollPane caja5, caja2;
 	JLabel label1;
 	DefaultTableModel modeloEr;
@@ -29,7 +28,7 @@ public class parsero {
 	
 	public String doParser() {
 		Stack<String> pila = new Stack<String>();
-		error = 200;
+		int error = 200;
 		
 		pila.push("$");
 		pila.push("Q");
@@ -79,6 +78,7 @@ public class parsero {
 			caja2.setBounds(10, 400, 660, 440);
 			label1.setBounds(10, 370, 100, 20);
 			String val;
+			error = getError(x);
 		    switch (error) {
 				case 201: val = "Se esperaba Palabra Reservada"; break;
 				case 204: val = "Se esperaba Identificador"; break;
@@ -99,111 +99,131 @@ public class parsero {
 	}
 
 	public String getTabla(String x, String k) {
-		String prod = "~";
 		
-		if(x.equals("Q")) { // Regla Q
-			prod = "JFfAs";
-			this.error = 201;
-		}if(x.equals("A")) { // Regla A 
+		switch (x) {
+		case "Q":
+			if(k.equals("s"))
+				return "JFfAs";
+			break;
+		case "A":
 			if(k.equals("*"))
-				prod = "*";
+				return "*";
 			if(k.equals("i"))
-				prod = "B";
-			this.error = 204;
-		}if(x.equals("B")) { // Regla B 
+				return "B";
+			break;
+		case "B":
 			if(k.equals("i"))
-				prod = "DC";
-		}if(x.equals("C")) { // Regla C 
+				return "DC";
+			break;
+		case "C":
 			if(k.equals("i"))
-				prod = "Ei";
-			this.error = 204;
-		}if(x.equals("D")) { // Regla D 
+				return "Ei";	
+			break;
+		case "D":
 			if(k.equals(",")) 
-				prod = "B,";
+				return"B,";
 			if(k.equals("f"))  
-				prod = "";
-			this.error = 201;
-		}if(x.equals("E")) { // Regla E
+				return "";
+			break;
+		case "E":
 			if(k.equals(".")) 
-				prod = "i.";
+				return "i.";
 			if(k.equals(",") || k.equals("f") || k.equals("r") || k.equals("n") 
 					|| k.equals("y") || k.equals("o") || k.equals(")")) 
-				prod = "";
-			this.error = 201;
-		}if(x.equals("F")) { // Regla F
+				return "";
+			break;
+		case "F":
 			if(k.equals("i")) 
-				prod = "HG";
-			this.error = 204;
-		}if(x.equals("H")) { // Regla H
+				return "HG";
+			break;
+		case "G":
+			if(k.equals("i")) 
+				return "Ii";
+			break;
+		case "H":
 			if(k.equals(",")) 
-				prod = "F,";
+				return "F,";
 			if(k.equals("w") || k.equals(")") || k.equals("$")) 
-				prod = "";
-			this.error = 201;
-		}if(x.equals("G")) { // Regla G
+				return "";
+			break;
+		case "I":
 			if(k.equals("i")) 
-				prod = "Ii";
-			this.error = 204;
-		}if(x.equals("I")) { // Regla I
-			if(k.equals("i")) 
-				prod = "i";
+				return "i";
 			if(k.equals(",") || k.equals("w") || k.equals(")") || k.equals("$")) 
-				prod = "";
-			this.error = 204;
-		}if(x.equals("J")) { // Regla J
+				return "";
+			break;
+		case "J":
 			if(k.equals("$") || k.equals(")"))
-				prod = "";
+				return "";
 			if(k.equals("w"))  
-				prod = "Kw";
-			this.error = 201;
-		}if(x.equals("K")) { // Regla K
+				return "Kw";
+			break;
+		case "K":
 			if(k.equals("i")) 
-				prod = "VL";
-			this.error = 204;
-		}if(x.equals("V")) { // Regla V
+				return "VL";
+			break;
+		case "V":
 			if(k.equals("y") || k.equals("o"))
-				prod = "KP";
+				return "KP";
 			if(k.equals(")") || k.equals("$"))
-				prod = "";
-			this.error = 201;
-		}if(x.equals("L")) { // Regla L
+				return "";
+			break;
+		case "L":
 			if(k.equals("i")) 
-				prod = "MC";
-			this.error = 204;
-		}if(x.equals("M")) { // Regla M
+				return "MC";
+			break;
+		case "M":
 			if(k.equals("r"))
-				prod = "ON";
+				return "ON";
 			if(k.equals("n"))
-				prod = ")Q(n";
-			this.error = 208;
-		}if(x.equals("N")) { // Regla N
+				return ")Q(n";
+			break;
+		case "N":
 			if(k.equals("r"))
-				prod = "r";
-			this.error = 208;
-		}if(x.equals("O")) { // Regla O
+				return "r";
+			break;
+		case "O":
 			if(k.equals("i"))
-				prod = "C";
+				return "C";
 			if(k.equals("'"))
-				prod = "'R'";
+				return "'R'";
 			if(k.equals("d"))
-				prod = "T";
-			this.error = 201;
-		}if(x.equals("P")) { // Regla P
+				return "T";
+			break;
+		case "P":
 			if(k.equals("y")) 
-				prod = "y";
+				return "y";
 			if(k.equals("o")) 
-				prod = "o";
-			this.error = 204;
-		}if(x.equals("R")) { // Regla R
+				return "o";
+			break;
+		case "R":
 			if(k.equals("a"))
-				prod = "a";
-			this.error = 205;
-		}if(x.equals("T")) { // Regla T
+				return "a";
+			break;
+		case "T":
 			if(k.equals("d"))
-				prod = "d";
+				return "d";
+			break;
+		default:
+			return "~";
 		}
-		
-		return prod;
+		return "~";
 	}
 	
+	public int getError(String x) {
+		switch (x) {
+		case "Q":  case "D": case "E": case "H": case "J": case "V": case "O":
+			return 201;
+		case "A": case "B": case "C": case "F": case "G": case "I": case "K": case "L": case "P":
+			return 204;
+		case "M": case "N":
+			return 208;
+		case "R": case "'":
+			return 205;
+		case "T":
+			return 206;
+		default:
+			return 210;
+		}
+	}
 }

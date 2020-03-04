@@ -99,9 +99,9 @@ public class escaner {
 	public void casoComilla(String cad, int linea) {
 		System.out.println(cad +" : "+ linea);
 		con++;
-		int valorC = addArrayInesCones(cad, cones, modeloCo, tablaCo, 600, 62, (linea+1));
-		todo.add(new token("a", (linea+1)));
-		Object datos[] = {con, (linea+1), cad, 61, valorC};
+		int valorC = addArrayInesCones(cad, cones, modeloCo, tablaCo, 600, 62, linea);
+		todo.add(new token("a", linea));
+		Object datos[] = {con, linea, cad, 61, valorC};
 		modelo.addRow(datos);
 	}
 	
@@ -116,6 +116,12 @@ public class escaner {
 		for (int i = 0; i < this.lineas.length; i++) {
 			Pattern p = Pattern.compile(regex);
 			Matcher m = p.matcher(this.lineas[i]);  	
+			
+			if(comilla) {
+				wait = false;
+				comilla = false;
+				casoComilla(consCom, comLin);
+			}
 			
 			while(m.find()) {
 				valor=0;
@@ -170,11 +176,6 @@ public class escaner {
 							simb = pal.simbolo;
 							tipo = 1;
 							isRes = true;
-							if(comilla) {
-								wait = false;
-								comilla = false;
-								casoComilla(consCom, comLin);
-							}
 							break;
 						}
 					}
