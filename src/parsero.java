@@ -14,8 +14,65 @@ public class parsero {
 	DefaultTableModel modeloEr;
 	ArrayList<token> list;
 	
+	private int[] indicesRawX = {4,8,10,11,12,13,14,15,16,18,19,20,22,24,25,26,27,50,51,53,54,61,62,72,199};
+	private int[] indicesRawY = {200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,700};
+	private ArrayList<Integer> indicesX;
+	private ArrayList<Integer> indicesY;
+	// La tabla Sintactica
+	private String [][] tablaSintactica = { 
+			//200
+			{"", "", "", "", "", "", "", "", "16 17 4 52 202 53 55 201", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "200", "", "", "", "", "", "", "", "211", "", "", "", "", "", "",  "", "99"},
+			{"4 203 52 61 53 204 205", "", "", "", 	"", "", "", "",	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "",  "", ""},
+			{"", "", "", "", "", "", "", "", "", "18", "19", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "20 21", "", "", "", "", "", "99", "", "", "", "", "",  "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "50 206", "", "99", "", "", "", "", ""},
+			{"202", "", "", "", "", "", "", "",	"", "", "", "", "207", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "22 4 208 52 4 53 209", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "24 23", "25 23", "", "", "", "", "", 	"", "", "",  "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "26 4 52 4 53 210", "", "50 207", "", "99", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "50 207", "", "99", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "27 28 4 29 52 212 53 55 215", "", "", "", "", "", "",  "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "213 214", "213 214", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "54 62 54", "61", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "50 212", "", "99", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "200", "", "", "", "", "", "", "", "211", "", "", "", "", "", "", "", "99"},
+			//300
+			{"", "", "10 301 11 306 310","", "", "", "", "", "", "", "", "", "", "", "", "", "",  "", "", "", "", "", "", "", ""},
+			{"302", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "72", ""},
+			{"304 303","", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "99", "", "", "", "", "", "", "", "", "", "", "", "", "", "50 302", "", "", "", "", "", "", "99"},
+			{"4 305", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 	""},
+			{"", "99", "", "99", "", "99", "99", "99", "", "", "", "", "", "", "", "", "", "99", "51 4", "99", "", "", "", "", "99"},
+			{"308 307", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "99", "", "", "", "", "", "", "", "", "", "", "", "", "50 306", "", "99", "", "", "", "", "99"},
+			{"4 309", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 	""},
+			{"4", "", "", "", "99", "", "", "",	"", "", "", "", "", "", "", "", "", "99", "", "99", "", "", "", "", "99"},
+			{"", "", "", "", "12 311", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "99", "", "", "", "", "99"},
+			{"313 312", "", "", "", "", "", "", "",	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "", "", "317 311", "317 311", "", "", "", "", "", "", "", "", "",	"", "", "99", "", "", "", "", "99"},
+			{"304 314", "", "", "", "", "", "", "",	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "315 316", "", "", "", "13 52 300 53",	"", "",	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "8", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"304", "",	"", "", "", "", "", "",	"", "", "", "", "", "", "", "", "", "", "", "", "54 318 54","319", "", "", ""},
+			{"", "", "", "", "", "", "14", "15", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "62", "", ""},
+			{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "61", "", "", ""},
+			{"300", "", "", "", "", "", "", "",	"200", "", "", "", "", "", "", "", "211", "", "", "", "", "", "", "", ""}
+		};
+	
+	
 	public parsero(ArrayList<token> list) {
 		this.list = list;
+		indicesX = new ArrayList<Integer>();
+		indicesY = new ArrayList<Integer>();
+
+		for (int N : indicesRawX) {
+			indicesX.add(N);
+		}
+		for (int N : indicesRawY) {
+			indicesY.add(N);
+		}
 	}
 	
 	public void setElements(JScrollPane caja5, JScrollPane caja2, JLabel label1,
@@ -27,47 +84,44 @@ public class parsero {
 	}
 	
 	public String doParser() {
-		Stack<String> pila = new Stack<String>();
+		Stack<Integer> pila = new Stack<Integer>();
 		int error = 200;
 		
-		pila.push("$");
-		pila.push("Q");
-		list.add(new token("$", 0));
-		
-		/*
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).key + " ");
-		}
-		*/
+		pila.push(199);
+		pila.push(700);
+		list.add(new token(199, 0));
 
 		int apun = 0;
-		String x="", k="";
+		int x=0, k=0;
 		do {
 			x = pila.pop();
 			k = list.get(apun).key;
-			// System.out.println(x + " " + k);
-			if(x.equals("$") || !Character.isUpperCase(x.charAt(0))) {
-				if (x.equals(k)) 
+			System.out.println(x + " " + k);
+			if(x == 99 || x < 200) {
+				if (x == k) 
 					apun++;
 				else {
 					ap = apun;
 					break;
 				}
 			} else {
-				String prod = getTabla(x, k);
-				// System.out.println("PROD: " + prod);
-				if(!prod.equals("~")) {
-					for (int i = 0; i < prod.length(); i++) {
-						pila.push(prod.substring(i, i+1));
+				String prod = M(x, k);
+				System.out.println(prod);
+				if(!prod.equals("")) {
+					if(!prod.equals("99")) {
+						String[] siguiente = prod.split("\\s");
+						for (int i = siguiente.length-1; i >= 0; i--) {
+							pila.add(Integer.parseInt(siguiente[i]));
+						}
 					}
 				}else {
 					ap = apun;
 					break;
 				}
 			}
-		} while(!x.equals("$"));
+		} while(x != 199);
 		
-		if(!x.equals("$")) {
+		if(x != 199) {
 			int linea;
 			if(apun==0)
 				linea = 1;
@@ -75,8 +129,8 @@ public class parsero {
 				linea = list.get(apun-1).linea;
 			
 			caja5.setVisible(true);
-			caja2.setBounds(10, 400, 660, 440);
-			label1.setBounds(10, 370, 100, 20);
+			caja2.setBounds(10, 630, 660, 210);
+			label1.setBounds(10, 550, 100, 20);
 			String val;
 			error = getError(x);
 		    switch (error) {
@@ -98,132 +152,28 @@ public class parsero {
 			
 	}
 
-	public String getTabla(String x, String k) {
-		
-		switch (x) {
-		case "Q":
-			if(k.equals("s"))
-				return "JFfAs";
-			break;
-		case "A":
-			if(k.equals("*"))
-				return "*";
-			if(k.equals("i"))
-				return "B";
-			break;
-		case "B":
-			if(k.equals("i"))
-				return "DC";
-			break;
-		case "C":
-			if(k.equals("i"))
-				return "Ei";	
-			break;
-		case "D":
-			if(k.equals(",")) 
-				return"B,";
-			if(k.equals("f"))  
-				return "";
-			break;
-		case "E":
-			if(k.equals(".")) 
-				return "i.";
-			if(k.equals(",") || k.equals("f") || k.equals("r") || k.equals("n") 
-					|| k.equals("y") || k.equals("o") || k.equals(")")) 
-				return "";
-			break;
-		case "F":
-			if(k.equals("i")) 
-				return "HG";
-			break;
-		case "G":
-			if(k.equals("i")) 
-				return "Ii";
-			break;
-		case "H":
-			if(k.equals(",")) 
-				return "F,";
-			if(k.equals("w") || k.equals(")") || k.equals("$")) 
-				return "";
-			break;
-		case "I":
-			if(k.equals("i")) 
-				return "i";
-			if(k.equals(",") || k.equals("w") || k.equals(")") || k.equals("$")) 
-				return "";
-			break;
-		case "J":
-			if(k.equals("$") || k.equals(")"))
-				return "";
-			if(k.equals("w"))  
-				return "Kw";
-			break;
-		case "K":
-			if(k.equals("i")) 
-				return "VL";
-			break;
-		case "V":
-			if(k.equals("y") || k.equals("o"))
-				return "KP";
-			if(k.equals(")") || k.equals("$"))
-				return "";
-			break;
-		case "L":
-			if(k.equals("i")) 
-				return "MC";
-			break;
-		case "M":
-			if(k.equals("r"))
-				return "ON";
-			if(k.equals("n"))
-				return ")Q(n";
-			break;
-		case "N":
-			if(k.equals("r"))
-				return "r";
-			break;
-		case "O":
-			if(k.equals("i"))
-				return "C";
-			if(k.equals("'"))
-				return "'R'";
-			if(k.equals("d"))
-				return "T";
-			break;
-		case "P":
-			if(k.equals("y")) 
-				return "y";
-			if(k.equals("o")) 
-				return "o";
-			break;
-		case "R":
-			if(k.equals("a"))
-				return "a";
-			break;
-		case "T":
-			if(k.equals("d"))
-				return "d";
-			break;
-		default:
-			return "~";
-		}
-		return "~";
+	public String M(int x, int k) {
+		if(indicesX.contains(k))
+			return tablaSintactica[indicesY.indexOf(x)][indicesX.indexOf(k)];
+		else
+			return "";
 	}
 	
-	public int getError(String x) {
+	public int getError(int x) {
 		switch (x) {
-		case "Q":  case "D": case "E": case "H": case "J": case "V": case "O":
+		case 300: case 303: case 305: case 307: case 310: case 312: case 316: case 200: case 201: case 203: case 204:
+		case 207: case 208: case 211: case 215:
 			return 201;
-		case "A": case "B": case "C": case "F": case "G": case "I": case "K": case "L": case "P":
+		case 301: case 302: case 304: case 306: case 308: case 309: case 311: case 313: case 317: case 202: case 206:
 			return 204;
-		case "M": case "N":
+		case 314: case 315:
 			return 208;
-		case "R": case "'":
+		case 318: case 205: case 209: case 210: case 214:
 			return 205;
-		case "T":
+		case 319: case 212: case 213: 
 			return 206;
 		default:
-			return 210;
+			return 211;
 		}
 	}
 }

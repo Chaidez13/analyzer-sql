@@ -3,8 +3,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,8 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Image;
-import javax.swing.ImageIcon;
 
 public class window  extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -51,16 +47,16 @@ public class window  extends JFrame{
 		DefaultTableModel modeloEr;
 		JButton boton = new JButton("€scanear");
 
-		caja1.setBounds(10, 10, 660, 180);
-		boton.setBounds(10, 200, 660, 30);
-		label1.setBounds(10, 270, 100, 20);
+		caja1.setBounds(10, 10, 660, 490);
+		boton.setBounds(10, 510, 660, 30);
+		label1.setBounds(10, 550, 100, 20);
 		label2.setBounds(700, 210, 200, 20);
 		label3.setBounds(700, 530, 200, 20);
-		label4.setBounds(10, 235, 200, 20);
-		caja2.setBounds(10, 300, 660, 540);
+		label4.setBounds(700, 100, 200, 20);
+		caja2.setBounds(10, 570, 660, 270);
 		caja3.setBounds(700, 240, 360, 280);
 		caja4.setBounds(700, 560, 360, 280);
-		caja5.setBounds(10, 260, 660, 100);
+		caja5.setBounds(10, 550, 660, 70);
 
 		String cabecera[] = {"Número","Línea","Token","Tipo","Código"};
 		String cabeceraId[] = {"Linea","ID","Tipo","Valor"};
@@ -86,8 +82,8 @@ public class window  extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				caja5.setVisible(false);
-				label1.setBounds(10, 270, 100, 20);
-				caja2.setBounds(10, 300, 660, 540);
+				label1.setBounds(10, 550, 100, 20);
+				caja2.setBounds(10, 570, 660, 270);
 
 				modelo.setRowCount(0);
 				modeloId.setRowCount(0);
@@ -100,18 +96,17 @@ public class window  extends JFrame{
 				scan.setTables(tablaCo, tablaId);
 				String scanText = scan.llenarTablas();
 				
-				//label4.setText(scanText);
 				
 				//Esto agrega el PARSER
-				// /*
-				ArrayList<token> todo = scan.getTodo();
-				parsero parser = new parsero(todo);
-				parser.setElements(caja5, caja2, label1, modeloEr);
-				String par = parser.doParser();
-				
-				label4.setText(scanText + "\\n" + par);
-				
-				// */
+				if(scan.getError() == 100) {
+					ArrayList<token> todo = scan.getTodo();
+					parsero parser = new parsero(todo);
+					parser.setElements(caja5, caja2, label1, modeloEr);
+					String par = parser.doParser();
+					label4.setText(scanText + "       " + par);
+
+				}else
+					label4.setText(scanText);
 			}
 		});
 		
